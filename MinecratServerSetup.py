@@ -24,7 +24,7 @@ def DownloadFile(url):
 def DownloadFromPaperAPI(project, version, build):
     url = f"https://papermc.io/api/v2/projects/{project}/versions/{version}/builds/{build}/downloads/{project}-{version}-{build}.jar"
     DownloadFile(url)
-
+# Te
 def DownloadManager(option):
     if option == "6":
         print("Downloading BungeeCord...")
