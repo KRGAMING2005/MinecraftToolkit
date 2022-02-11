@@ -1,8 +1,18 @@
 import os
-import sys
 import json
 import requests as req
 from subprocess import STDOUT, Popen
+
+def fileDownloader(url):
+    local_filename = url.split('/')[-1]
+    r = req.get(url)
+    f = open(local_filename, 'wb')
+
+    for chunk in r.iter_content(chunk_size=512 * 1024):
+        if chunk:
+            f.write(chunk)
+    f.close()
+    return
 
 def getLatesBuild(project, version):
     url = f"https://papermc.io/api/v2/projects/{project}/versions/{version}"
@@ -10,86 +20,48 @@ def getLatesBuild(project, version):
     data = resp.json()
     return max(data["builds"])
 
-def DownloadFile(url):
-    local_filename = url.split('/')[-1]
-    r = req.get(url)
-    f = open(local_filename, 'wb')
 
-    for chunk in r.iter_content(chunk_size=512 * 1024): 
-        if chunk: # filter out keep-alive new chunks
-            f.write(chunk)
-    f.close()
-    return 
-
-def DownloadFromPaperAPI(project, version, build):
+def getPaperDownloadURL(project, version, build):
     url = f"https://papermc.io/api/v2/projects/{project}/versions/{version}/builds/{build}/downloads/{project}-{version}-{build}.jar"
-    DownloadFile(url)
-# Te
-def DownloadManager(option):
-    if option == "6":
-        print("Downloading BungeeCord...")
-        url = "https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar"
-        DownloadFile(url)
-        print("Downloaded BungeeCord.jar")
-    elif option == "5":
-        mc = input("What Velocity version do you want to donwload? ")
-        print("Downloading Velocity...")
-        DownloadFromPaperAPI('velocity', mc, getLatesBuild('velocity', mc))
-        print("Downloaded velocity-3.1.1.jar")
-    elif option == "4":
-        mc = input("What Craftbukkit version do you want to donwload? ")
-        print("Downloading Craftbukkit...")
-        url = f"https://download.getbukkit.org/craftbukkit/craftbukkit-{mc}.jar"
-        DownloadFile(url)
-        print("Downloaded Craftbukkit.jar")
-    elif option == "3":
-        mc = input("What Spigot version do you want to donwload? ")
-        print("Downloading Spigot...")
-        url = f"https://download.getbukkit.org/spigot/spigot-{mc}.jar"
-        DownloadFile(url)
-        print("Downloaded Spigot.jar")
-    elif option == "2":
-        mc = input("What Paper version do you want to donwload? ")
-        print("Downloading Paper...")
-        DownloadFromPaperAPI('paper', mc, getLatesBuild('paper', mc))
-        print("Downloaded Paper.jar")
-        BungeeCord = input("Is this going to be a bungeecord sub server [Y] [N] ? ")
-        if BungeeCord == "Y" or BungeeCord == "y":
-            proc = Popen(f'java -Xmx1G -jar paper-{mc}-'+ str(getLatesBuild('paper', mc)) + ".jar", shell=True, stdin=None, stdout=open(os.devnull,"wb"), stderr=STDOUT, executable="/bin/bash")
-            proc.wait()
-            os.remove("eula.txt")
-            eula = open("eula.txt", "a+")
-            eula.write("eula=true")
-            with open('spigot.yml', 'r') as spigot:
-                spigotd = spigot.read()
-            spigotd = spigotd.replace('bungeecord: false', 'bungeecord: true')
-            with open('spigot.yml', 'w') as spigot:
-                spigot.write(spigotd)
-            exit()
-    elif option == "1":
-        mc = input("What Purpur version do you want to donwload? ")
-        print("Downloading Purpur...")
-        url = f"https://api.purpurmc.org/v2/purpur/{mc}/latest/download"
-        DownloadFile(url)
-        os.rename("download", f"purpur-{mc}.jar")
-        print("Downloaded Purpur.jar")
-    elif option == "q":
-        exit()
-    else:
-        menu()
+    return url
 
 
-#downloadFile('velocity', '3.1.1', getLatesBuild('velocity', '3.1.1'))
+def downloadManager(server):
+    if server == "Velocity":
+        version = input("What version of Velocity do you want to donwload? ")
+        print(f"Downloading velocity-{version}-{getLatesBuild('velocity', version)}.jar")
+        fileDownloader(getPaperDownloadURL("velocity", version, getLatesBuild("velocity", version)))
+
+    elif server == "Paper":
+        version = input("What version of Paper do you want to donwload? ")
+        print(f"Downloading paper-{version}-{getLatesBuild('paper', version)}.jar")
+        fileDownloader(getPaperDownloadURL("paper", version, getLatesBuild("paper", version)))
+
+
+def translateDownload(software):
+    if software == "6":
+        return "BungeeCord"
+    elif software == "5":
+        return "Velocity"
+    elif software == "4":
+        return "Craftbukkit"
+    elif software == "3":
+        return "Spigot"
+    elif software == "2":
+        return "Paper"
+    elif software == "1":
+        return "Purpur"
+
 
 def menu():
-    option = input("\n\nWhat software do you want to install?\n[6] BungeeCord\n[5] Velocity\n[4] Craftbukkit\n[3] Spigot\n[2] Paper\n[1] Purpur\n$ ")
-    DownloadManager(option)
+    option = input("What software do you want to install?\n[6] BungeeCord\n[5] Velocity\n[4] Craftbukkit\n[3] Spigot\n[2] Paper\n[1] Purpur\n$ ")
+    downloadManager(translateDownload(option))
 
 
 def main():
-    print("Minecraft Server Toolkit V.1")
-    print("This script will convert the current directory into a minecraft server or proxy")
-    keep = input("Press any key to contine")
+    print("This script will convert this directory into a minecraft server or proxy")
+    keep = input("Press ENTER to continue!")
     menu()
+
 
 main()
