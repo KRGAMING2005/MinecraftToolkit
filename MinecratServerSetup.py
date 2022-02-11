@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import requests as req
-
+from subprocess import STDOUT, Popen
 
 def getLatesBuild(project, version):
     url = f"https://papermc.io/api/v2/projects/{project}/versions/{version}"
@@ -55,9 +55,16 @@ def DownloadManager(option):
         print("Downloaded Paper.jar")
         BungeeCord = input("Is this going to be a bungeecord sub server [Y] [N] ? ")
         if BungeeCord == "Y" or BungeeCord == "y":
-            eula = open("eula.txt", "rw")
+            proc = Popen(f'java -Xmx1G -jar paper-{mc}-'+ getLatesBuild('paper', mc) + ".jar")
+            proc.wait()
+            eula = open("eula.txt", "a+")
             eula.write("eula=true")
             eula.close()
+            with open('server.properties', 'r') as properties:
+                propdata = properties.read()
+            propdata = propdata.replace('online-mode=true', 'online-mode=false')
+            with open('server.properties', 'w') as properties:
+                properties.write(propdata)
         else:
             exit()
     elif option == "1":
