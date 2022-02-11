@@ -3,6 +3,9 @@ import json
 import requests as req
 from subprocess import STDOUT, Popen
 
+def BungeeCordSetup():
+    url = ""
+
 def fileDownloader(url):
     local_filename = url.split('/')[-1]
     r = req.get(url)
