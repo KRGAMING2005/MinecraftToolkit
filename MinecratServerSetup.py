@@ -55,7 +55,7 @@ def DownloadManager(option):
         print("Downloaded Paper.jar")
         BungeeCord = input("Is this going to be a bungeecord sub server [Y] [N] ? ")
         if BungeeCord == "Y" or BungeeCord == "y":
-            proc = Popen(f'java -Xmx1G -jar paper-{mc}-'+ getLatesBuild('paper', mc) + ".jar")
+            proc = Popen(f'java -Xmx1G -jar paper-{mc}-'+ str(getLatesBuild('paper', mc)) + ".jar")
             proc.wait()
             eula = open("eula.txt", "a+")
             eula.write("eula=true")
