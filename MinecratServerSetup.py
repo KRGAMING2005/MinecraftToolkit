@@ -9,6 +9,7 @@ def BungeeCordSetup():
     fileDownloader(fileURL + "server.properties")
     fileDownloader(fileURL + "spigot.yml")
 
+
 def fileDownloader(url):
     local_filename = url.split('/')[-1]
     r = req.get(url)
@@ -19,6 +20,7 @@ def fileDownloader(url):
             f.write(chunk)
     f.close()
     return
+
 
 def getLatesBuild(project, version):
     url = f"https://papermc.io/api/v2/projects/{project}/versions/{version}"
