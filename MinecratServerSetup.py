@@ -2,9 +2,14 @@ import os
 import json
 import requests as req
 from subprocess import STDOUT, Popen
+import fileinput
 
 def BungeeCordSetup():
-    url = ""
+    fileURL = "https://raw.githubusercontent.com/KRGAMING2005/MinecraftToolkit/main/serverFiles/"
+    fileDownloader(fileURL + "server.properties")
+    fileDownloader(fileURL + "spigot.yml")
+    for line in fileinput.input("spigot.yml", inplace=True):
+        print('{} {}'.format(fileinput.filelineno(), line), end='')
 
 def fileDownloader(url):
     local_filename = url.split('/')[-1]
