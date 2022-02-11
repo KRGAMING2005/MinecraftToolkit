@@ -36,11 +36,11 @@ def getPaperDownloadURL(project, version, build):
 
 def downloadManager(server):
     if server == "Velocity":
-        version = input("What version of Velocity do you want to donwload? ")
+        version = input("What version of Velocity do you want to download? ")
         print(f"Downloading velocity-{version}-{getLatesBuild('velocity', version)}.jar")
         fileDownloader(getPaperDownloadURL("velocity", version, getLatesBuild("velocity", version)))
     elif server == "Paper":
-        version = input("What version of Paper do you want to donwload? ")
+        version = input("What version of Paper do you want to download? ")
         print(f"Downloading paper-{version}-{getLatesBuild('paper', version)}.jar")
         fileDownloader(getPaperDownloadURL("paper", version, getLatesBuild("paper", version)))
         bungee = input("Do you want this server to be setup as a bungeecord subserver? (y,n)")
