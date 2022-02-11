@@ -57,15 +57,14 @@ def DownloadManager(option):
         if BungeeCord == "Y" or BungeeCord == "y":
             proc = Popen(f'java -Xmx1G -jar paper-{mc}-'+ str(getLatesBuild('paper', mc)) + ".jar", shell=True, stdin=None, stdout=open(os.devnull,"wb"), stderr=STDOUT, executable="/bin/bash")
             proc.wait()
+            os.remove("eula.txt")
             eula = open("eula.txt", "a+")
             eula.write("eula=true")
-            eula.close()
-            with open('server.properties', 'r') as properties:
-                propdata = properties.read()
-            propdata = propdata.replace('online-mode=true', 'online-mode=false')
-            with open('server.properties', 'w') as properties:
-                properties.write(propdata)
-        else:
+            with open('spigot.yml', 'r') as spigot:
+                spigotd = spigot.read()
+            spigotd = spigotd.replace('bungeecord: false', 'bungeecord: true')
+            with open('spigot.yml', 'w') as spigot:
+                spigot.write(spigotd)
             exit()
     elif option == "1":
         mc = input("What Purpur version do you want to donwload? ")
