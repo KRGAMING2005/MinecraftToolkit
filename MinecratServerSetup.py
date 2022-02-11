@@ -8,8 +8,6 @@ def BungeeCordSetup():
     fileURL = "https://raw.githubusercontent.com/KRGAMING2005/MinecraftToolkit/main/serverFiles/"
     fileDownloader(fileURL + "server.properties")
     fileDownloader(fileURL + "spigot.yml")
-    for line in fileinput.input("spigot.yml", inplace=True):
-        print('{} {}'.format(fileinput.filelineno(), line), end='')
 
 def fileDownloader(url):
     local_filename = url.split('/')[-1]
